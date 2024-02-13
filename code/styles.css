@@ -95,10 +95,14 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  transition: transform 250ms linear; 
 }
 
 .tile.shake{
   animation: shake 250ms ease-in-out;
+}
+.tile.dance{
+  animation: dance 500ms ease-in-out;
 }
 
 @keyframes shake {
@@ -121,7 +125,37 @@ body {
     transform:translateX() ;
   }
 }
+@keyframes dance {
+  20%{
+    transform:translateY(-50%) ;
+  }
+  
+  40%{
+    transform:translateY(5%) ;
+  }
+  
+  60%{
+    transform:translateY(-25%) ;
+  }
+  
+  80%{
+    transform:translateY(2.5%) ;
+  }
+  
+  90%{
+    transform:translateY(-5%) ;
+  }
+  100%{
+    transform:translateY(0%) ;
+  }
+  
+}
 
+
+
+.tile.flip{
+  transform: rotateX(90deg);
+}
 .tile[data-state="active"] {
   border: 0.1em solid hsl(200, 1%, 34%);
 }
