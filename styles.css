@@ -201,3 +201,8 @@ align-self: center;
 }
 
 
+.footer{
+  align-self: center;
+  color: white;
+  margin-top: 2em;
+}
