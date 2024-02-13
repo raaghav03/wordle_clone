@@ -2314,7 +2314,7 @@ const targetWords = [
   "artsy",
   "rural",
   "shave",
-]
+];
 const dictionary = [
   "aahed",
   "aalii",
@@ -15289,57 +15289,133 @@ const dictionary = [
   "rural",
   "shave",
 ];
+const keyBoard=document.querySelector("[data-keyboard]");
+const alertContainer = document.querySelector("[data-alert-container]");
+const guessGrid = document.querySelector("[data-guess-grid]");
+const offsetFromDate = new Date(2024, 0, 1);
+const milOffset = Date.now() - offsetFromDate;
+const dayOffset = milOffset / 1000 / 24 / 60 / 60;
+const targetWord = targetWords[Math.floor(dayOffset)];
 
-startInteraction()
-const guessGrid = document.querySelector("[data-guess-grid]")
+startInteraction();
+
 function startInteraction() {
-  document.addEventListener("click", handleMouseClick)
-  document.addEventListener("keydown", handleKeyPress)
+  document.addEventListener("click", handleMouseClick);
+  document.addEventListener("keydown", handleKeyPress);
 }
 
 function stopInteraction() {
-  document.removeEventListener("click", handleMouseClick)
-  document.removeEventListener("keydown", handleKeyPress)
+  document.removeEventListener("click", handleMouseClick);
+  document.removeEventListener("keydown", handleKeyPress);
 }
 
 function handleMouseClick(e) {
   if (e.target.matches("[data-key]")) {
-    pressKey(e.target.dataset.key)
-    return
+    pressKey(e.target.dataset.key);
+    return;
   }
 
   if (e.target.matches("[data-enter]")) {
-    submitGuess()
-    return
+    submitGuess();
+    return;
   }
 
   if (e.target.matches("[data-delete]")) {
-    deleteKey()
-    return
+    deleteKey();
+    return;
   }
 }
 
 function handleKeyPress(e) {
   if (e.key === "Enter") {
-    submitGuess()
-    return
+    submitGuess();
+    return;
   }
 
   if (e.key === "Backspace" || e.key === "Delete") {
-    deleteKey()
-    return
+    deleteKey();
+    return;
   }
 
   if (e.key.match(/^[a-z]$/)) {
-    pressKey(e.key)
-    return
+    pressKey(e.key);
+    return;
   }
 }
 
 function pressKey(key) {
-  
-  const nextTile = guessGrid.querySelector(":not([data-letter])")
-  nextTile.dataset.letter = key.toLowerCase()
-  nextTile.textContent = key
-  nextTile.dataset.state = "active"
+  const activeTiles = getActiveTiles();
+  if (activeTiles.length >= 5) return; // Correctly limits the tiles to 5
+  const nextTile = guessGrid.querySelector(":not([data-letter])");
+
+  nextTile.dataset.letter = key.toLowerCase();
+  nextTile.textContent = key;
+  nextTile.dataset.state = "active"; // Sets the state to active
+}
+
+function getActiveTiles() {
+  return guessGrid.querySelectorAll('[data-state="active"]'); // Correctly selects active tiles
+}
+
+function deleteKey() {
+  const activeTiles = getActiveTiles();
+  const lastTile = activeTiles[activeTiles.length - 1];
+  if (lastTile == null) return;
+  lastTile.textContent = "";
+  delete lastTile.dataset.state;
+  delete lastTile.dataset.letter;
+}
+
+function submitGuess() {
+  const activeTiles = [...getActiveTiles()];
+  if (activeTiles.length != targetWord.length) {
+    showAlert("Not enough tiles");
+    shakeTiles(activeTiles);
+    return;
+  }
+  const guess = activeTiles.reduce((word, tile) => {
+    return word + tile.dataset.letter;
+  }, "");
+  // console.log(guess)
+  if(!dictionary.includes(guess)){
+    showAlert("not a wordle word");
+    shakeTiles(activeTiles);
+    return;
+  }
+
+  stopInteraction();
+  activeTiles.forEach((...params)=>flipTiles(...params,guess))
+}
+
+function flipTiles(tile,index,array,guess){
+  const letter=tile.dataset.letter;
+  const key =keyboard.querySelector(`[data-key="${letter}"`)
+}
+
+function showAlert(message, duration = 1000) {
+  const alert = document.createElement("div");
+  alert.textContent = message;
+  alert.classList.add("alert");
+  alertContainer.prepend(alert);
+  if (duration == null) return;
+
+  setTimeout(() => {
+    alert.classList.add("hide");
+    alert.addEventListener("transitionend", () => {
+      alert.remove();
+    });
+  }, duration);
+}
+
+function shakeTiles(tiles) {
+  tiles.forEach((tile) => {
+    tile.classList.add("shake");
+    tile.addEventListener(
+      "animationend",
+      () => {
+        tile.classList.remove("shake");
+      },
+      { once: true }
+    );
+  });
 }
