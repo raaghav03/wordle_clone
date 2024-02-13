@@ -59,6 +59,10 @@ body {
   --lightness-offset: 10%;
 }
 
+.key.wrong {
+  --lightness: 23%;
+}
+
 .key.wrong-location {
   --hue: 49;
   --saturation: 51%;
