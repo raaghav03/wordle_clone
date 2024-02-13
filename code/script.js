@@ -15291,7 +15291,7 @@ const dictionary = [
 ];
 
 startInteraction()
-
+const guessGrid = document.querySelector("[data-guess-grid]")
 function startInteraction() {
   document.addEventListener("click", handleMouseClick)
   document.addEventListener("keydown", handleKeyPress)
@@ -15314,31 +15314,32 @@ function handleMouseClick(e) {
   }
 
   if (e.target.matches("[data-delete]")) {
-    deleteKey();
-    return;
+    deleteKey()
+    return
   }
 }
 
 function handleKeyPress(e) {
   if (e.key === "Enter") {
-    submitGuess();
-    return;
+    submitGuess()
+    return
   }
 
   if (e.key === "Backspace" || e.key === "Delete") {
-    deleteKey();
-    return;
+    deleteKey()
+    return
   }
 
   if (e.key.match(/^[a-z]$/)) {
-    pressKey(e.key);
-    return;
+    pressKey(e.key)
+    return
   }
 }
 
 function pressKey(key) {
-  const nextTile = guessGrid.querySelector(":not([data-letter])");
-  nextTile.dataset.letter = key.toLowerCase();
-  nextTile.textContent = key;
-  nextTile.dataset.state = "active";
+  
+  const nextTile = guessGrid.querySelector(":not([data-letter])")
+  nextTile.dataset.letter = key.toLowerCase()
+  nextTile.textContent = key
+  nextTile.dataset.state = "active"
 }
